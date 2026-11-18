@@ -106,13 +106,9 @@ Expected result (abridged):
 {
   "count": 3,
   "services": [
-    {
-      "serviceId": "agentsearch-web-extract-v1",
-      "name": "AgentSearch Web Extract",
-      "description": "Fetch a URL and get it back ready for an LLM or RAG pipeline...",
-      "category": "web",
-      "priceUsd": "0.005000"
-    }
+    { "serviceId": "agentsearch-web-search-v1", "name": "AgentSearch", "category": "web", "priceUsd": "0.005000" },
+    { "serviceId": "agentsearch-web-extract-v1", "name": "AgentSearch Web Extract", "category": "web", "priceUsd": "0.005000" },
+    { "serviceId": "agentsearch-web-render-v1", "name": "AgentSearch Web Render", "category": "web", "priceUsd": "0.005000" }
   ]
 }
 ```
