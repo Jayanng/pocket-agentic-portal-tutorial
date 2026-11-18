@@ -1,0 +1,16 @@
+INIT serverInfo: {"name": "pocket-agentic-portal", "version": "0.1.2"}
+INIT protocolVersion: 2025-03-26
+TOOLS: ['search_services', 'describe_service', 'call_service']
+QUOTE-ONLY isError: None
+QUOTE-ONLY content head: {
+  "quoteOnly": true,
+  "note": "POCKET_QUOTE_ONLY is on: these are the terms a paid call would sign. Nothing was signed.",
+  "quote": {
+    "network": "eip155:8453",
+    "scheme": "exact",
+    "amount": "5000",
+    "as
+UNKNOWN: {
+  "error": "There is no service \"no-such-service-v1\". Use search_services to find one. Nothing was signed."
+}
+STDIO_TRANSCRIPT_DONE

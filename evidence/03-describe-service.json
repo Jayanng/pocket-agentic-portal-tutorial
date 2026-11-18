@@ -1,0 +1,107 @@
+{
+  "serviceId": "agentsearch-web-extract-v1",
+  "displayName": "AgentSearch Web Extract",
+  "description": "Fetch a URL and get it back ready for an LLM or RAG pipeline: clean markdown (headings and links kept), plain text, the title, the page's links and fetch metadata. POST /v1/extract with {url} and optional formats and max_chars. JSON in, JSON out, errors included. Pay per request in USDC; no account, no API key.",
+  "category": "web",
+  "resourceUrl": "https://agent.pocket.network/v1/agentsearch-web-extract-v1",
+  "priceUsd": "0.005000",
+  "priceVersion": 1,
+  "rails": [
+    {
+      "id": "base",
+      "network": "eip155:8453",
+      "chainId": 8453,
+      "tokenAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "tokenDecimals": 6,
+      "payToAddress": "0xF732...829"
+    }
+  ],
+  "paymentNetworks": [
+    "eip155:8453",
+    "eip155:4217"
+  ],
+  "paymentProtocols": [
+    "x402",
+    "mpp"
+  ],
+  "protocols": [
+    "rest"
+  ],
+  "inputSchema": {
+    "type": "object",
+    "description": "An extraction request. The body is JSON and is bounded by the service at 16 KiB.",
+    "properties": {
+      "url": {
+        "type": "string",
+        "description": "The page to fetch (http or https)."
+      },
+      "formats": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "markdown",
+            "text"
+          ]
+        },
+        "description": "Which renderings to return. Defaults to the service's own choice."
+      },
+      "max_chars": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100000,
+        "description": "Cap on returned characters (default 50000)."
+      }
+    },
+    "required": [
+      "url"
+    ]
+  },
+  "outputSchema": {
+    "type": "object",
+    "description": "For POST /v1/extract, a JSON object with request_id, url, title, markdown, text, links (href and text), meta (status_code, content_type, fetched_at, chars, truncated) and error (null on success). A bad request answers 400 with `{ error: { code, message, request_id } }`."
+  },
+  "methods": {
+    "GET /v1/capabilities": "read",
+    "GET /v1/health": "read",
+    "GET /v1/version": "read",
+    "POST /v1/extract": "read"
+  },
+  "example": {
+    "method": "POST",
+    "path": "/v1/extract",
+    "request": {
+      "url": "https://example.com"
+    },
+    "response": {
+      "portal": {
+        "provenance": "third-party-supplier",
+        "serviceId": "agentsearch-web-extract-v1",
+        "schemaCheck": "unchecked"
+      },
+      "data": {
+        "request_id": "05f5a4ebe2684c79867aa9bf3515c33d",
+        "url": "https://example.com/",
+        "title": "Example Domain",
+        "markdown": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)",
+        "text": "",
+        "links": [
+          {
+            "href": "https://iana.org/domains/example",
+            "text": "Learn more"
+          }
+        ],
+        "meta": {
+          "status_code": 200,
+          "content_type": "text/html",
+          "fetched_at": "2026-09-25T15:53:07.843243+00:00",
+          "chars": 167,
+          "truncated": false
+        },
+        "error": null
+      }
+    },
+    "capturedAt": "2026-09-25T15:53:08Z"
+  },
+  "firstParty": true
+}

@@ -1,0 +1,172 @@
+{
+  "x402Version": 2,
+  "resource": {
+    "url": "https://agent.pocket.network/v1/agentsearch-web-extract-v1",
+    "description": "Fetch a URL and get it back ready for an LLM or RAG pipeline: clean markdown (headings and links kept), plain text, the title, the page's links and fetch metadata. POST /v1/extract with {url} and optional formats and max_chars. JSON in, JSON out, errors included. Pay per request in USDC; no account, no API key.",
+    "mimeType": "application/json",
+    "serviceName": "Pocket Network",
+    "tags": [
+      "web",
+      "agentsearch-web-extract-v1",
+      "rest"
+    ],
+    "iconUrl": "https://pocket.network/wp-content/uploads/2026/09/Pocket-Icon.png"
+  },
+  "extensions": {
+    "bazaar": {
+      "info": {
+        "input": {
+          "type": "http",
+          "bodyType": "json",
+          "body": {
+            "url": "https://example.com"
+          },
+          "method": "POST"
+        },
+        "output": {
+          "type": "json",
+          "example": {
+            "portal": {
+              "provenance": "third-party-supplier",
+              "serviceId": "agentsearch-web-extract-v1",
+              "schemaCheck": "passed"
+            },
+            "data": {}
+          }
+        }
+      },
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "http"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "POST",
+                  "PUT",
+                  "PATCH"
+                ]
+              },
+              "bodyType": {
+                "type": "string",
+                "enum": [
+                  "json",
+                  "form-data",
+                  "text"
+                ]
+              },
+              "body": {
+                "type": "object",
+                "description": "An extraction request. The body is JSON and is bounded by the service at 16 KiB.",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "The page to fetch (http or https)."
+                  },
+                  "formats": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "markdown",
+                        "text"
+                      ]
+                    },
+                    "description": "Which renderings to return. Defaults to the service's own choice."
+                  },
+                  "max_chars": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100000,
+                    "description": "Cap on returned characters (default 50000)."
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "method",
+              "bodyType",
+              "body"
+            ],
+            "additionalProperties": false
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "example": {
+                "type": "object",
+                "properties": {
+                  "portal": {
+                    "type": "object",
+                    "properties": {
+                      "provenance": {
+                        "const": "third-party-supplier"
+                      },
+                      "serviceId": {
+                        "const": "agentsearch-web-extract-v1"
+                      },
+                      "schemaCheck": {
+                        "enum": [
+                          "passed",
+                          "undeclared",
+                          "unchecked"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "provenance",
+                      "serviceId",
+                      "schemaCheck"
+                    ]
+                  },
+                  "data": {
+                    "type": "object",
+                    "description": "For POST /v1/extract, a JSON object with request_id, url, title, markdown, text, links (href and text), meta (status_code, content_type, fetched_at, chars, truncated) and error (null on success). A bad request answers 400 with `{ error: { code, message, request_id } }`."
+                  }
+                },
+                "required": [
+                  "portal",
+                  "data"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        },
+        "required": [
+          "input"
+        ]
+      }
+    }
+  },
+  "accepts": [
+    {
+      "scheme": "exact",
+      "network": "eip155:8453",
+      "amount": "5000",
+      "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "payTo": "0xF732...829",
+      "maxTimeoutSeconds": 60,
+      "extra": {
+        "name": "USD Coin",
+        "version": "2"
+      }
+    }
+  ]
+}
