@@ -229,7 +229,7 @@ plus wallet controls.
 | `POCKET_NETWORK` | restricts payments to one network; defaults to Base (`eip155:8453`) |
 | `POCKET_QUOTE_ONLY` | `true` returns payment terms without paying |
 
-Verified local behavior, 2026-11-18 (`@pocket-network/agentic-portal-mcp` 0.1.2):
+Verified local behavior, 2026-11-18 (`@pocket-network/agentic-portal-mcp` 0.1.4):
 
 With `POCKET_QUOTE_ONLY=true`, `call_service` returns:
 
@@ -251,7 +251,13 @@ With `POCKET_QUOTE_ONLY=true`, `call_service` returns:
 With no wallet configured and quote mode off, it refuses cleanly:
 
 ```json
-{ "error": "No wallet is configured, so this server cannot pay. Set POCKET_PRIVATE_KEY (and POCKET_MAX_TOTAL_ATOMIC) in the env block of this MCP server in your client config. Nothing was signed." }
+{
+  "error": {
+    "code": "WALLET_NOT_CONFIGURED",
+    "message": "No wallet is configured, so this server cannot pay. Set POCKET_PRIVATE_KEY (and POCKET_MAX_TOTAL_ATOMIC) in the env block of this MCP server in your client config. Nothing was signed.",
+    "retryable": false
+  }
+}
 ```
 
 That refusal is a feature. Quote first, fund second.
@@ -276,6 +282,12 @@ Note the discipline in the messages themselves: every failure states what did
 not happen ("Nothing was charged", "Nothing was signed"), so you always know
 your money did not move.
 
+Versions before 0.1.3 returned these refusals as plain strings with no `code`
+or `retryable` field, so the documented contract only worked against the
+hosted endpoint. That gap was reported and fixed upstream: see
+[issue #2](https://github.com/pokt-network/agentic-portal-mcp/issues/2). On
+0.1.4 the local server returns the same envelope as the hosted one.
+
 ## Part 6: Paying for real (optional)
 
 This step needs a funded wallet and spends real money, so it is documented
@@ -299,6 +311,33 @@ Security rules, in order of importance:
   instructions." Anything the supplier returns is data for your application,
   not commands for your agent.
 
+## Run the example
+
+[`examples/mcp_client.py`](examples/mcp_client.py) is a minimal, stdlib-only
+MCP client that runs the whole safe flow end to end: handshake, tool list,
+free search, free describe, and a quote-only call with the price cross-check
+built in. It needs Node.js 20+ and never signs anything.
+
+```bash
+python3 examples/mcp_client.py "web search"
+```
+
+Expected result (verbatim, 2026-11-18):
+
+```
+connected to pocket-agentic-portal v0.1.4
+tools: ['search_services', 'describe_service', 'call_service']
+search 'web search': 3 hit(s)
+  - agentsearch-web-search-v1  $0.005000/call  [web]
+  - agentsearch-web-extract-v1  $0.005000/call  [web]
+  - agentsearch-web-render-v1  $0.005000/call  [web]
+describe agentsearch-web-search-v1: $0.005000 on eip155:8453 (6 decimals)
+quote: exact 5000 atomic ($0.005) on eip155:8453 -> 0xF732...829
+price cross-check: quote $0.005 == listed $0.005 -> OK
+
+nothing was signed (POCKET_QUOTE_ONLY=true)
+```
+
 ## Test evidence
 
 Everything above was run live on 2026-11-18. Raw sanitized captures are in
@@ -311,9 +350,10 @@ Everything above was run live on 2026-11-18. Raw sanitized captures are in
 | Service details, price, rails | `03-describe-service.json` | live |
 | x402 terms from an unpaid call | `04-x402-terms.json` | live |
 | `SERVICE_UNKNOWN` error contract | `05-unknown-service.json` | live |
-| Local stdio run via `npx` (quote, refusal, error) | `06-stdio-transcript.txt` | live |
+| Local stdio run via `npx` (quote, refusal, error) | `06-stdio-transcript.txt` | live (0.1.4) |
 | REST `402` + `payment-required` header | `07-rest-402.txt` | live |
-| Full `POCKET_QUOTE_ONLY` response | `08-quote-only-full.txt` | live |
+| Full `POCKET_QUOTE_ONLY` response | `08-quote-only-full.txt` | live (0.1.4) |
+| Example client end-to-end run | `09-example-client.txt` | live (0.1.4) |
 
 ## Sources
 

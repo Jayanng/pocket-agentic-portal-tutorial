@@ -1,0 +1,11 @@
+connected to pocket-agentic-portal v0.1.4
+tools: ['search_services', 'describe_service', 'call_service']
+search 'web search': 3 hit(s)
+  - agentsearch-web-search-v1  $0.005000/call  [web]
+  - agentsearch-web-extract-v1  $0.005000/call  [web]
+  - agentsearch-web-render-v1  $0.005000/call  [web]
+describe agentsearch-web-search-v1: $0.005000 on eip155:8453 (6 decimals)
+quote: exact 5000 atomic ($0.005) on eip155:8453 -> 0xF732...829
+price cross-check: quote $0.005 == listed $0.005 -> OK
+
+nothing was signed (POCKET_QUOTE_ONLY=true)
