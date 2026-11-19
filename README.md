@@ -1,9 +1,9 @@
 # Call your first AI service through Pocket's Agentic Portal
 
-A reproducible walkthrough for developers who have never used Pocket Network.
-By the end you can find a paid data service, inspect its price, see exactly how
-the payment works, and call it from an MCP client, all with verified commands
-and real outputs.
+A reproducible walkthrough for developers new to Pocket Network. By the end
+you will have found a paid data service, read its exact price, watched the
+payment protocol run without spending anything, and called the service from
+an MCP client. Every command is verified, every output is real.
 
 Every command in this tutorial was executed on 2026-11-18 against the live
 endpoints. Every output block is a sanitized copy of what those commands really
@@ -42,8 +42,8 @@ Three facts shape everything below:
 
 ## Part 1: Say hello to the server
 
-The hosted endpoint speaks JSON-RPC over HTTP. An MCP client does this
-handshake for you, but seeing it once makes the rest obvious.
+The hosted endpoint speaks JSON-RPC over HTTP. An MCP client runs this
+handshake for you, but seeing it once makes everything else obvious.
 
 ```bash
 curl -s https://agent.pocket.network/mcp \
@@ -85,7 +85,7 @@ Expected result: exactly three tools.
 | `describe_service` | returns a service's details, price and example calls | free |
 | `call_service` | calls a service and pays for it | the service's price |
 
-Note the `call_service` schema before you use it. Its arguments are
+Read the `call_service` schema before you use it. Its arguments are
 `serviceId` (required), `path` for REST operations (like `/v1/extract`),
 `body` for the JSON request body, and `httpMethod` (`GET` or `POST`, defaulting
 to POST with a body and GET without). It carries `additionalProperties: false`,
@@ -153,7 +153,7 @@ the quote matches the listed price.
 
 ## Part 3: The payment protocol without paying
 
-Call the service the way you intend to use it, but with no payment attached:
+Call the service the way you intend to use it, but attach no payment:
 
 ```bash
 curl -s https://agent.pocket.network/mcp \
@@ -181,8 +181,8 @@ Expected result: `isError: true` with the x402 terms inside:
 }
 ```
 
-This is x402 doing its job. The portal does not reject you; it quotes you. The
-fields to understand:
+This is x402 doing its job. The portal does not reject you. It quotes you.
+The fields to understand:
 
 - `scheme: "exact"`: pay the exact amount, no more.
 - `amount: "5000"`: USDC atomic units at 6 decimals, which is $0.005 and
